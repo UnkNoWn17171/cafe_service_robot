@@ -5,7 +5,7 @@ TurtleBot3 Burger tabanina tepsi ve dikey kol eklenmis; 11 masaya, tezgaha ve
 sarj istasyonuna web arayuzunden verilen emirlerle otonom olarak gidiyor.
 
 Konya Teknik Universitesi, Elektrik-Elektronik Muhendisligi.
-RAC-Lab / Doc. Dr. Akif Durdu.
+RAC-Lab 
 Demo videosu: https://github.com/UnkNoWn17171/cafe_service_robot/releases/latest
 
 
