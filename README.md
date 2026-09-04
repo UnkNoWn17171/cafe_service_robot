@@ -6,6 +6,8 @@ sarj istasyonuna web arayuzunden verilen emirlerle otonom olarak gidiyor.
 
 Konya Teknik Universitesi, Elektrik-Elektronik Muhendisligi.
 RAC-Lab / Doc. Dr. Akif Durdu.
+Demo videosu: https://github.com/UnkNoWn17171/cafe_service_robot/releases/latest
+
 
 ---
 
