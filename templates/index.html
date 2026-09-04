@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kafe servis robotu</title>
+<style>
+  :root {
+    --zemin:     #1b2430;
+    --panel:     #222d3b;
+    --cizgi:     #2f3b4a;
+    --porselen:  #e8e4dc;
+    --murekkep:  #1a2129;
+    --tezgah:    #3e4c5e;
+    --sarj:      #2e7d5b;
+    --iptal:     #a63a2e;
+    --pirinc:    #d9c48a;
+    --soluk:     #8b98a7;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 22px 16px 44px;
+    background: var(--zemin); color: var(--porselen);
+    font-family: Ubuntu, "DejaVu Sans", system-ui, sans-serif;
+  }
+  .kutu { max-width: 520px; margin: 0 auto; }
+  header { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+  h1 { margin: 0; font-size: 15px; font-weight: 500; color: var(--soluk); }
+  .baglanti { display: flex; align-items: center; gap: 7px; font-size: 13px; color: var(--soluk); }
+  .nokta { width: 8px; height: 8px; border-radius: 50%; background: var(--soluk); }
+  .nokta.canli { background: #4caf7d; }
+  .nokta.kopuk { background: var(--iptal); }
+  .durum {
+    margin: 14px 0 20px; padding: 16px 18px;
+    background: var(--panel); border-left: 3px solid var(--pirinc);
+  }
+  #asama { margin: 0; font-size: 20px; font-weight: 500; line-height: 1.3; }
+  #mesaj { margin: 7px 0 0; font-size: 14px; color: var(--soluk); min-height: 19px; }
+  .ust { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+  .plan { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .bos { border: 1px dashed var(--cizgi); }
+  button {
+    font-family: inherit; font-size: 15px; font-weight: 500;
+    min-height: 58px; border: none; border-radius: 3px;
+    background: var(--porselen); color: var(--murekkep); cursor: pointer;
+  }
+  .plan button { font-size: 22px; }
+  button:focus-visible { outline: 3px solid var(--pirinc); outline-offset: 2px; }
+  button:active { transform: translateY(1px); }
+  .tezgah { background: var(--tezgah); color: var(--porselen); }
+  .sarj { background: var(--sarj); color: var(--porselen); }
+  .dur {
+    width: 100%; margin-top: 18px; min-height: 50px;
+    background: var(--iptal); color: var(--porselen);
+  }
+  button.hedefte { box-shadow: 0 0 0 3px var(--pirinc); }
+  @media (prefers-reduced-motion: no-preference) {
+    button.hedefte { animation: nabiz 1.7s ease-in-out infinite; }
+  }
+  @keyframes nabiz { 50% { box-shadow: 0 0 0 7px rgba(217, 196, 138, 0.3); } }
+</style>
+</head>
+<body>
+<div class="kutu">
+
+  <header>
+    <h1>Kafe servis robotu</h1>
+    <span class="baglanti"><span class="nokta" id="nokta"></span><span id="baglanti">Baglaniyor</span></span>
+  </header>
+
+  <div class="durum">
+    <p id="asama">-</p>
+    <p id="mesaj">Bir masaya bas.</p>
+  </div>
+
+  <div class="ust">
+    <button class="tezgah" data-hedef="Tezgah">Tezgah</button>
+    <button class="sarj" data-hedef="Sarj">Sarj</button>
+  </div>
+
+  <div class="plan">
+    <div class="bos"></div>
+    <button data-hedef="Masa 1"  aria-label="Masa 1">1</button>
+    <button data-hedef="Masa 2"  aria-label="Masa 2">2</button>
+    <button data-hedef="Masa 3"  aria-label="Masa 3">3</button>
+    <button data-hedef="Masa 4"  aria-label="Masa 4">4</button>
+    <button data-hedef="Masa 5"  aria-label="Masa 5">5</button>
+    <button data-hedef="Masa 6"  aria-label="Masa 6">6</button>
+    <button data-hedef="Masa 7"  aria-label="Masa 7">7</button>
+    <button data-hedef="Masa 8"  aria-label="Masa 8">8</button>
+    <button data-hedef="Masa 9"  aria-label="Masa 9">9</button>
+    <button data-hedef="Masa 10" aria-label="Masa 10">10</button>
+    <button data-hedef="Masa 11" aria-label="Masa 11">11</button>
+  </div>
+
+  <button class="dur" id="dur">Gorevi iptal et</button>
+</div>
+
+<script>
+  var asamaEl = document.getElementById("asama");
+  var mesajEl = document.getElementById("mesaj");
+  var noktaEl = document.getElementById("nokta");
+  var baglantiEl = document.getElementById("baglanti");
+  var butonlar = document.querySelectorAll("button[data-hedef]");
+
+  var hedefler = [];
+  butonlar.forEach(function (b) { hedefler.push(b.dataset.hedef); });
+  hedefler.sort(function (a, b) { return b.length - a.length; });
+
+  butonlar.forEach(function (b) {
+    b.addEventListener("click", function () { emirGonder(b.dataset.hedef); });
+  });
+  document.getElementById("dur").addEventListener("click", iptalEt);
+
+  function emirGonder(hedef) {
+    fetch("/emir", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ hedef: hedef })
+    })
+      .then(function (c) { return c.json(); })
+      .then(function (v) {
+        mesajEl.textContent = "Kuyruga eklendi: " + v.hedef + " (bekleyen: " + v.bekleyen + ")";
+      })
+      .catch(function () {
+        mesajEl.textContent = "Emir gonderilemedi. Sunucu calisiyor mu?";
+      });
+  }
+
+  function iptalEt() {
+    fetch("/iptal", { method: "POST" })
+      .then(function (c) { return c.json(); })
+      .then(function () { mesajEl.textContent = "Iptal gonderildi"; })
+      .catch(function () { mesajEl.textContent = "Iptal gonderilemedi. Sunucu calisiyor mu?"; });
+  }
+
+  function isaretle(asamaMetni) {
+    var aktif = null;
+    for (var i = 0; i < hedefler.length; i++) {
+      if (asamaMetni.indexOf(hedefler[i]) !== -1) { aktif = hedefler[i]; break; }
+    }
+    butonlar.forEach(function (b) {
+      b.classList.toggle("hedefte", b.dataset.hedef === aktif);
+    });
+  }
+
+  function durumCek() {
+    fetch("/durum")
+      .then(function (c) { return c.json(); })
+      .then(function (d) {
+        asamaEl.textContent = d.asama;
+        noktaEl.className = "nokta canli";
+        baglantiEl.textContent = "Bagli";
+        isaretle(d.asama);
+      })
+      .catch(function () {
+        noktaEl.className = "nokta kopuk";
+        baglantiEl.textContent = "Baglanti yok";
+      });
+  }
+
+  durumCek();
+  setInterval(durumCek, 1000);
+</script>
+</body>
+</html>

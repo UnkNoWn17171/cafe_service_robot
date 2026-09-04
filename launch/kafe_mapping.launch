@@ -1,0 +1,26 @@
+<launch>
+  <!-- 1) Kafe dunyasi + servis_robot -->
+  <include file="$(find cafe_service_robot)/launch/spawn_servis.launch"/>
+
+  <!-- 2) Govde/tekerlek tf agaci.
+       turtlebot3_remote.launch KULLANMIYORUZ: o dosya description.launch.xml'i
+       icerip robot_description'i stok burger ile ezer ve servis_robot
+       tanimini bozar. Sadece robot_state_publisher'i cagiriyoruz. -->
+  <node pkg="robot_state_publisher" type="robot_state_publisher"
+        name="robot_state_publisher" output="screen">
+    <param name="publish_frequency" type="double" value="50.0"/>
+  </node>
+
+  <!-- 3) gmapping. Parametreler node ETIKETININ ICINDE ->
+       /turtlebot3_slam_gmapping/ altina yuklenir, yani gmapping'in baktigi yere. -->
+  <node pkg="gmapping" type="slam_gmapping" name="turtlebot3_slam_gmapping" output="screen">
+    <param name="base_frame" value="base_footprint"/>
+    <param name="odom_frame" value="odom"/>
+    <param name="map_frame"  value="map"/>
+    <rosparam command="load" file="$(find cafe_service_robot)/config/gmapping_kafe.yaml"/>
+  </node>
+
+  <!-- 4) RViz. required="false" -> kapatirsan launch olmez. -->
+  <node pkg="rviz" type="rviz" name="rviz" required="false"
+        args="-d $(find turtlebot3_slam)/rviz/turtlebot3_gmapping.rviz"/>
+</launch>

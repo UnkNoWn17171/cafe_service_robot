@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+<robot name="servis_robot" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- Hazir TurtleBot3 burger'i oldugu gibi iceri al. Bu include
+       common_properties.xacro'yu da getirir; oradaki "white"
+       malzemesi (rgba 1 1 1 1) asagida kullaniliyor. -->
+  <xacro:include filename="$(find turtlebot3_description)/urdf/turtlebot3_burger.urdf.xacro"/>
+
+  <!-- 1. Kol Tabani -->
+  <link name="kol_taban">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry><box size="0.04 0.04 0.05"/></geometry>
+      <material name="white"/>
+    </visual>
+    <inertial><mass value="0.001"/><inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6"/></inertial>
+  </link>
+  <joint name="kol_taban_joint" type="fixed">
+    <parent link="base_link"/>
+    <child  link="kol_taban"/>
+    <origin xyz="-0.03 0 0.12" rpy="0 0 0"/>
+  </joint>
+
+  <!-- 2. Dikey Govde -->
+  <link name="dikey_kol">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry><box size="0.04 0.04 0.20"/></geometry>
+      <material name="white"/>
+    </visual>
+    <inertial><mass value="0.001"/><inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6"/></inertial>
+  </link>
+  <joint name="dikey_kol_joint" type="fixed">
+    <parent link="kol_taban"/>
+    <child  link="dikey_kol"/>
+    <origin xyz="0 0 0.125" rpy="0 0 0"/>
+  </joint>
+
+  <!-- 3. Tasima Tepsisi -->
+  <link name="tepsi">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry><cylinder radius="0.12" length="0.01"/></geometry>
+      <material name="white"/>
+    </visual>
+    <inertial><mass value="0.001"/><inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6"/></inertial>
+  </link>
+  <joint name="tepsi_joint" type="fixed">
+    <parent link="dikey_kol"/>
+    <child  link="tepsi"/>
+    <origin xyz="0.08 0 0.105" rpy="0 0 0"/>
+  </joint>
+
+  <!-- Kendi parcalarim: duz geometri, rengi tamamen burasi belirler. -->
+  <gazebo reference="kol_taban"><material>Gazebo/White</material></gazebo>
+  <gazebo reference="dikey_kol"><material>Gazebo/White</material></gazebo>
+  <gazebo reference="tepsi"><material>Gazebo/White</material></gazebo>
+
+  <!-- TurtleBot3'un kendi parcalari. turtlebot3_burger.gazebo.xacro
+       bunlara DarkGrey / FlatBlack veriyor. Asagidaki bloklar include'dan
+       SONRA geldigi icin son sozu bunlarin soylemesi bekleniyor.
+       Mesh'ler .stl, icinde gomulu renk yok, o yuzden ezilebiliyor. -->
+  <gazebo reference="base_link"><material>Gazebo/White</material></gazebo>
+  <gazebo reference="base_scan"><material>Gazebo/White</material></gazebo>
+
+  <!-- Beyaz tekerlek istenmezse asagidaki uc satir silinebilir. -->
+  <gazebo reference="wheel_left_link"><material>Gazebo/White</material></gazebo>
+  <gazebo reference="wheel_right_link"><material>Gazebo/White</material></gazebo>
+  <gazebo reference="caster_back_link"><material>Gazebo/White</material></gazebo>
+
+</robot>

@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<launch>
+  <!-- 1. Gazebo'yu kendi kafemizle başlat -->
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="world_name" value="$(find cafe_service_robot)/worlds/kafe.world"/>
+    <arg name="paused" value="false"/>
+    <arg name="use_sim_time" value="true"/>
+    <arg name="gui" value="true"/>
+    <arg name="headless" value="false"/>
+    <arg name="debug" value="false"/>
+  </include>
+
+  <!-- 2. Kendi xacro dosyamızı ROS parametresine (robot_description) yükle -->
+  <param name="robot_description" command="$(find xacro)/xacro '$(find cafe_service_robot)/urdf/servis_robot.urdf.xacro'" />
+
+  <!-- 3. Parametredeki modeli alıp Gazebo'nun içine "servis_robot" adıyla fırlat -->
+  <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
+        args="-urdf -model servis_robot -param robot_description -z 0.05"/>
+</launch>

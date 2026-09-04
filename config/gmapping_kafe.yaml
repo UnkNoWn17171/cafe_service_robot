@@ -1,0 +1,37 @@
+# SIMULASYONA OZEL AYAR
+# Gazebo odometrisi mutlak gercek (odometrySource=world) oldugu icin
+# gmapping'in lazer duzeltmesini kapatiyoruz. Gercek robotta ASLA yapilmaz.
+
+map_update_interval: 1.0
+maxUrange: 3.4          # lazer max 3.5 m; stok 3.0 gereksiz kisitliydi
+sigma: 0.05
+kernelSize: 1
+lstep: 0.05
+astep: 0.05
+iterations: 5
+lsigma: 0.075
+ogain: 3.0
+lskip: 0
+
+minimumScore: 10000     # skorlar 600'u gecmez -> lazer duzeltmesi tamamen kapali
+srr: 0.001              # odometri gurultusu ~0 -> parcaciklar dagilmasin
+srt: 0.001
+str: 0.001
+stt: 0.001
+
+linearUpdate: 0.1       # stok 1.0 m cok seyrekti
+angularUpdate: 0.1
+temporalUpdate: -1.0    # dururken tarama isleme KAPALI <- 15 derece kaymanin ilaci
+
+resampleThreshold: 0.5
+particles: 30           # duzeltme yoksa 100 parcacik bosuna CPU
+
+xmin: -15.0             # kafe alani +-15 m; stok +-10 yetmiyordu
+ymin: -15.0
+xmax: 15.0
+ymax: 15.0
+delta: 0.05
+llsamplerange: 0.01
+llsamplestep: 0.01
+lasamplerange: 0.005
+lasamplestep: 0.005

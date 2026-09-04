@@ -1,0 +1,22 @@
+<launch>
+  <!-- 1) Kafe dunyasi + robot -->
+  <include file="$(find cafe_service_robot)/launch/spawn_servis.launch"/>
+
+  <!-- 2) Govde tf agaci -->
+  <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher">
+    <param name="publish_frequency" type="double" value="50.0"/>
+  </node>
+
+  <!-- 3) map_server + amcl + move_base -->
+  <include file="$(find cafe_service_robot)/launch/kafe_navigation.launch"/>
+
+  <!-- 4) RViz -->
+  <node pkg="rviz" type="rviz" name="rviz" required="false"
+        args="-d $(find turtlebot3_navigation)/rviz/turtlebot3_navigation.rviz"/>
+
+  <!-- 5) Arayuz. launch-prefix YOK: bash araya girerse Ctrl+C bash'i oldurur,
+       python oksuz kalir ve port 5000'i tutmaya devam eder.
+       Gazebo beklemesi zaten kodun icinde: istemci.wait_for_server() -->
+  <node pkg="cafe_service_robot" type="servis_web.py" name="servis_web"
+        output="screen"/>
+</launch>

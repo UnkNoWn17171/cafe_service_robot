@@ -1,0 +1,27 @@
+<launch>
+  <arg name="model"  default="$(optenv TURTLEBOT3_MODEL burger)"/>
+  <arg name="harita" default="$(find cafe_service_robot)/maps/kafe_servis.yaml"/>
+
+  <!-- Sabit harita (masa tabanlari cizilmis olan) -->
+  <node pkg="map_server" type="map_server" name="map_server" args="$(arg harita)"/>
+
+  <!-- AMCL. Robot (0,0,0)'da dogdugu icin baslangic pozu hazir:
+       RViz'de elle "2D Pose Estimate" yapmak gerekmez. -->
+  <include file="$(find turtlebot3_navigation)/launch/amcl.launch">
+    <arg name="initial_pose_x" value="0.0"/>
+    <arg name="initial_pose_y" value="0.0"/>
+    <arg name="initial_pose_a" value="0.0"/>
+  </include>
+
+  <!-- move_base: TB3 varsayilanlari, EN SON bizim override dosyamiz -->
+  <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+    <param name="base_local_planner" value="dwa_local_planner/DWAPlannerROS"/>
+    <rosparam file="$(find turtlebot3_navigation)/param/costmap_common_params_$(arg model).yaml" command="load" ns="global_costmap"/>
+    <rosparam file="$(find turtlebot3_navigation)/param/costmap_common_params_$(arg model).yaml" command="load" ns="local_costmap"/>
+    <rosparam file="$(find turtlebot3_navigation)/param/local_costmap_params.yaml"  command="load"/>
+    <rosparam file="$(find turtlebot3_navigation)/param/global_costmap_params.yaml" command="load"/>
+    <rosparam file="$(find turtlebot3_navigation)/param/move_base_params.yaml"      command="load"/>
+    <rosparam file="$(find turtlebot3_navigation)/param/dwa_local_planner_params_$(arg model).yaml" command="load"/>
+    <rosparam file="$(find cafe_service_robot)/config/costmap_kafe.yaml" command="load"/>
+  </node>
+</launch>

@@ -1,0 +1,14 @@
+# TB3 varsayilanlarinin UZERINE yazilir (move_base node'unda en son yuklenir).
+
+global_costmap:
+  inflation_radius: 0.35      # stok 1.0 -> tum zemin sisme bolgesinde kaliyordu
+  cost_scaling_factor: 3.0
+
+local_costmap:
+  inflation_radius: 0.35
+  cost_scaling_factor: 3.0
+
+DWAPlannerROS:
+  xy_goal_tolerance: 0.20        # stok 0.05 -> robot hedefte tepinip abort ediyor
+  yaw_goal_tolerance: 0.25       # ~14 derece
+  latch_xy_goal_tolerance: true  # konuma varinca sadece don, geri gelme
