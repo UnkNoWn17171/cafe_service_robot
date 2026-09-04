@@ -152,7 +152,7 @@ kullandim. rosbridge, tarayicinin ham ROS mesajlasmasi yapmasi gerektiginde
 avantajli; sabit sayida buton icin daha az yeni parca gerektiren yol Flask.
 
 **Neden launch-prefix yok.**
-Onceden bash -c 'sleep 15; $0 $@' vardi. Araya bash girince Ctrl+C bash'i
+Onceden `bash -c 'sleep 15; $0 $@'` vardi. Araya bash girince Ctrl+C bash'i
 olduruyor, python oksuz kalip 5000 portunu tutmaya devam ediyordu
 (OSError: [Errno 98] Address already in use). Gazebo beklemesini zaten
 istemci.wait_for_server() yapiyor. Kural: kaynak tutan (port, dosya, cihaz)
@@ -215,11 +215,11 @@ gerekmez.
   "Got a transition callback on a goal handle that we're not tracking"
   hatasi basiyor. Akis etkilenmiyor; duzeltmesi stop_tracking_goal()
   ancak get_state() sorgusunu bozma riski tasidigi icin dokunulmadi.
-- URDF'te tepsi icin <collision> tanimi yok; Gazebo'da tepsi hicbir seye
+- URDF'te tepsi icin `<collision>` tanimi yok; Gazebo'da tepsi hicbir seye
   carpmiyor. Costmap footprint'i de stok TurtleBot3 degerlerinde.
 - Web arayuzu VM'in libvirt NAT agindan disari acilmiyor. Ayni ag disindan
   erisim icin host makinede port yonlendirme gerekir.
-- Acilista URDF ayristiricisi "multiple inconsistent <name>" uyarisi basiyor:
+- Acilista URDF ayristiricisi "multiple inconsistent `<name>`" uyarisi basiyor:
   govde materyalleri stok TurtleBot3 tanimindan sonra Gazebo/White ile
   eziliyor. Kasitli; gorsel disinda etkisi yok.
 - move_base robot Gazebo'da dogmadan once ayaga kalktigi icin bir kez
